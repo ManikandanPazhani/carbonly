@@ -3,16 +3,30 @@ import { useState } from 'react';
 export default function ShareCard({ result, badge }) {
   const [copied, setCopied] = useState(false);
 
-  const text = `🌍 My carbon footprint is ${result.annual} tons/year — ${badge.emoji} ${badge.label}\nCalculated with Carbonly (carbonly.vercel.app)`;
+  const text = `🌍 My Carbon Footprint — Carbonly
+
+📊 Annual: ${result.annual} tons CO₂/year
+📅 Monthly: ${result.total} kg CO₂/month
+${badge.emoji} Badge: ${badge.label}
+${result.vsAvg > 0 
+  ? `⚠️ ${result.vsAvg}% above India average` 
+  : `✅ ${Math.abs(result.vsAvg)}% below India average`}
+
+📋 Breakdown:
+⚡ Electricity: ${result.electricity} kg/month
+🚗 Travel: ${result.travel} kg/month
+🥘 Food: ${result.food} kg/month
+🛍️ Lifestyle: ${result.lifestyle} kg/month
+
+Calculate yours 👉 https://carbonly-chi.vercel.app/`;
 
   const handleShare = async () => {
     if (navigator.share) {
       try {
-        await navigator.share({ title: 'My Carbon Footprint', text });
+        await navigator.share({ title: 'My Carbon Footprint — Carbonly', text });
         return;
       } catch { /* user cancelled */ }
     }
-    // Fallback: copy to clipboard
     await navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
@@ -30,9 +44,8 @@ export default function ShareCard({ result, badge }) {
       position: 'relative',
       overflow: 'hidden',
     }}>
-      {/* decorative blobs */}
       <div style={{ position: 'absolute', top: -30, right: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,0.07)' }} />
-      <div style={{ position: 'absolute', bottom: -20, left: -20, width: 80,  height: 80,  borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }} />
+      <div style={{ position: 'absolute', bottom: -20, left: -20, width: 80, height: 80, borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }} />
 
       <div style={{ position: 'relative' }}>
         <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 4, letterSpacing: 1, textTransform: 'uppercase', fontFamily: "'DM Sans', sans-serif" }}>
@@ -42,13 +55,32 @@ export default function ShareCard({ result, badge }) {
           {result.annual}
           <span style={{ fontSize: 22, fontWeight: 600, letterSpacing: 0, marginLeft: 6 }}>tons/yr</span>
         </div>
-        <div style={{ marginTop: 10, fontSize: 18 }}>
-          {badge.emoji} {badge.label}
-        </div>
+        <div style={{ marginTop: 10, fontSize: 18 }}>{badge.emoji} {badge.label}</div>
         <div style={{ marginTop: 6, fontSize: 13, opacity: 0.75 }}>
           {result.vsAvg > 0
             ? `${result.vsAvg}% above India average`
             : `${Math.abs(result.vsAvg)}% below India average 🎉`}
+        </div>
+
+        {/* Breakdown pills */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
+          {[
+            ['⚡', `${result.electricity}kg`],
+            ['🚗', `${result.travel}kg`],
+            ['🥘', `${result.food}kg`],
+            ['🛍️', `${result.lifestyle}kg`],
+          ].map(([ic, val]) => (
+            <div key={ic} style={{
+              background: 'rgba(255,255,255,0.15)',
+              borderRadius: 50,
+              padding: '5px 12px',
+              fontSize: 12,
+              fontWeight: 600,
+              fontFamily: "'DM Sans', sans-serif",
+            }}>
+              {ic} {val}
+            </div>
+          ))}
         </div>
 
         <button onClick={handleShare} style={{
@@ -63,10 +95,13 @@ export default function ShareCard({ result, badge }) {
           fontSize: 14,
           fontWeight: 600,
           fontFamily: "'DM Sans', sans-serif",
-          transition: 'background 0.2s',
         }}>
           {copied ? '✓ Copied to clipboard!' : '📤 Share my result'}
         </button>
+
+        <div style={{ marginTop: 10, fontSize: 11, opacity: 0.6 }}>
+          carbonly-chi.vercel.app
+        </div>
       </div>
     </div>
   );
