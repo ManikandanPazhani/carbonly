@@ -297,7 +297,29 @@ function CarbonlyApp() {
             {/* ── WAITLIST FORM (new feature) ── */}
             <WaitlistForm result={result} />
 
-            <BtnSecondary onClick={reset} style={{ marginTop: 4 }}>↺ Recalculate</BtnSecondary>
+            <BtnSecondary onClick={reset} style={{ marginTop: 4 }}>↺ {/* Methodology Disclaimer */}
+<div style={{
+  borderRadius: 16,
+  padding: '16px 18px',
+  marginBottom: 14,
+  border: `1px solid ${t.border}`,
+  background: t.muted,
+}}>
+  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>
+    📋 About these estimates
+  </div>
+  <div style={{ fontSize: 12, color: t.sub, lineHeight: 1.7 }}>
+    Calculations are based on standard emission factors:
+    electricity (CEA India grid: 0.8 kg CO₂/kWh), petrol (2.3 kg/litre),
+    diesel (2.68 kg/litre), flights (ICAO factors), food and lifestyle
+    (lifecycle emission averages). India average based on World Bank data
+    (~1.6 tons/year). <br /><br />
+    These are <strong>approximations for awareness purposes</strong> — actual
+    emissions vary by vehicle model, appliance efficiency, airline, and
+    supplier. Results should not be used for regulatory or financial reporting.
+  </div>
+</div>
+Recalculate</BtnSecondary>
           </div>
         )}
 
