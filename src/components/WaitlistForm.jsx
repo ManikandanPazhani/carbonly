@@ -24,10 +24,11 @@ export default function WaitlistForm({ result }) {
   };
 
   const handleSubmit = () => {
-    const err = validate();
-    if (err) { setError(err); return; }
-    setError('');
-    setStatus('loading');
+  const err = validate();
+  if (err) { setError(err); return; }
+  window.open('https://tally.so/r/0Q1y7N', '_blank');
+  setStatus('success');
+};
 
     // ── Simulate save (replace with real API call) ────────────────────────────
     // Example real call:
