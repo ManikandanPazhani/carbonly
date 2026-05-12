@@ -2,19 +2,12 @@ import { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { Card } from './UI';
 
-/**
- * WaitlistForm
- * Collects name + email from the user after they see their results.
- * Stores locally (localStorage) to simulate a waitlist —
- * swap the handleSubmit function for a real API call (Mailchimp,
- * Supabase, Tally webhook, etc.) when you're ready.
- */
 export default function WaitlistForm({ result }) {
   const t = useTheme();
-  const [name,    setName]    = useState('');
-  const [email,   setEmail]   = useState('');
-  const [status,  setStatus]  = useState('idle'); // idle | loading | success | error
-  const [error,   setError]   = useState('');
+  const [name,   setName]   = useState('');
+  const [email,  setEmail]  = useState('');
+  const [status, setStatus] = useState('idle');
+  const [error,  setError]  = useState('');
 
   const validate = () => {
     if (!name.trim())  return 'Please enter your name';
@@ -24,36 +17,10 @@ export default function WaitlistForm({ result }) {
   };
 
   const handleSubmit = () => {
-  const err = validate();
-  if (err) { setError(err); return; }
-  window.open('https://tally.so/r/0Q1y7N', '_blank');
-  setStatus('success');
-};
-
-    // ── Simulate save (replace with real API call) ────────────────────────────
-    // Example real call:
-    // fetch('https://your-api.com/waitlist', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ name, email, footprint: result?.annual }),
-    // })
-    // ─────────────────────────────────────────────────────────────────────────
-
-    setTimeout(() => {
-      try {
-        const existing = JSON.parse(localStorage.getItem('carbonly_waitlist') || '[]');
-        const alreadyIn = existing.some(e => e.email === email);
-        if (alreadyIn) {
-          setStatus('success'); // still show success — don't tell the user they're duped
-          return;
-        }
-        existing.push({ name, email, footprint: result?.annual, joinedAt: new Date().toISOString() });
-        localStorage.setItem('carbonly_waitlist', JSON.stringify(existing));
-        setStatus('success');
-      } catch {
-        setStatus('error');
-      }
-    }, 900);
+    const err = validate();
+    if (err) { setError(err); return; }
+    window.open('https://tally.so/r/0Q1y7N', '_blank');
+    setStatus('success');
   };
 
   const inputStyle = {
@@ -78,8 +45,7 @@ export default function WaitlistForm({ result }) {
           You're on the list, {name.split(' ')[0]}!
         </div>
         <div style={{ color: t.sub, fontSize: 14, lineHeight: 1.6 }}>
-          We'll let you know when company reports, monthly tracking,<br />
-          and the Carbonly app launch. No spam, ever.
+          We'll let you know when the Carbonly app launches. No spam, ever.
         </div>
         <div style={{
           marginTop: 16, display: 'inline-block',
@@ -94,17 +60,15 @@ export default function WaitlistForm({ result }) {
 
   return (
     <Card accent style={{ animation: 'fadeUp 0.4s ease' }}>
-      {/* Header */}
       <div style={{ marginBottom: 18 }}>
         <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 18, marginBottom: 6 }}>
           📬 Stay in the loop
         </div>
         <div style={{ color: t.sub, fontSize: 13, lineHeight: 1.6 }}>
-          Get monthly tracking, company carbon reports, and early access to the Carbonly app — free.
+          Get early access to the Carbonly app — free.
         </div>
       </div>
 
-      {/* Perks */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20 }}>
         {[
           ['📊', 'Monthly footprint report in your inbox'],
@@ -118,15 +82,14 @@ export default function WaitlistForm({ result }) {
         ))}
       </div>
 
-      {/* Inputs */}
       <input
         type="text"
         placeholder="Your name"
         value={name}
         onChange={e => setName(e.target.value)}
         style={inputStyle}
-        onFocus={e  => (e.target.style.borderColor = '#6366f1')}
-        onBlur={e   => (e.target.style.borderColor = t.border)}
+        onFocus={e => (e.target.style.borderColor = '#6366f1')}
+        onBlur={e  => (e.target.style.borderColor = t.border)}
       />
       <input
         type="email"
@@ -134,53 +97,40 @@ export default function WaitlistForm({ result }) {
         value={email}
         onChange={e => setEmail(e.target.value)}
         style={{ ...inputStyle, marginBottom: 0 }}
-        onFocus={e  => (e.target.style.borderColor = '#6366f1')}
-        onBlur={e   => (e.target.style.borderColor = t.border)}
+        onFocus={e => (e.target.style.borderColor = '#6366f1')}
+        onBlur={e  => (e.target.style.borderColor = t.border)}
         onKeyDown={e => e.key === 'Enter' && handleSubmit()}
       />
 
-      {/* Error */}
       {error && (
         <div style={{ fontSize: 13, color: '#ef4444', marginTop: 8, marginBottom: 4 }}>
           ⚠️ {error}
         </div>
       )}
 
-      {/* Submit */}
       <button
         onClick={handleSubmit}
-        disabled={status === 'loading'}
         style={{
           marginTop: 14,
           width: '100%',
-          background: status === 'loading'
-            ? 'rgba(99,102,241,0.4)'
-            : 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+          background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
           border: 'none',
           borderRadius: 14,
           padding: '15px',
           color: '#fff',
           fontSize: 15,
           fontWeight: 700,
-          cursor: status === 'loading' ? 'not-allowed' : 'pointer',
+          cursor: 'pointer',
           fontFamily: "'DM Sans', sans-serif",
           boxShadow: '0 4px 20px rgba(99,102,241,0.3)',
-          transition: 'all 0.2s',
-          animation: status === 'loading' ? 'pulse 1s infinite' : 'none',
         }}
       >
-        {status === 'loading' ? 'Joining…' : 'Join the waitlist →'}
+        Join the waitlist →
       </button>
 
       <div style={{ marginTop: 10, fontSize: 11, color: t.sub, textAlign: 'center' }}>
         No spam. Unsubscribe anytime.
       </div>
-
-      {status === 'error' && (
-        <div style={{ fontSize: 13, color: '#ef4444', textAlign: 'center', marginTop: 8 }}>
-          Something went wrong. Please try again.
-        </div>
-      )}
     </Card>
   );
 }
