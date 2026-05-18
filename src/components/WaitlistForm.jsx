@@ -9,6 +9,8 @@ export default function WaitlistForm({ result }) {
   const [status, setStatus] = useState('idle');
   const [error,  setError]  = useState('');
 
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDYqK6bA2r5utTJeQE5kqsGuXucw8nAZzm17WIWQHoisEMS_CeiNoRlCBUom3pK-JY/exec';
+
   const validate = () => {
     if (!name.trim())  return 'Please enter your name';
     if (!email.trim()) return 'Please enter your email';
@@ -16,11 +18,22 @@ export default function WaitlistForm({ result }) {
     return null;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const err = validate();
     if (err) { setError(err); return; }
-    window.open('https://tally.so/r/0Q1y7N', '_blank');
-    setStatus('success');
+    setError('');
+    setStatus('loading');
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email }),
+      });
+      setStatus('success');
+    } catch {
+      setStatus('error');
+    }
   };
 
   const inputStyle = {
@@ -39,13 +52,13 @@ export default function WaitlistForm({ result }) {
 
   if (status === 'success') {
     return (
-      <Card style={{ textAlign: 'center', padding: '32px 24px', animation: 'fadeUp 0.5s ease' }}>
+      <Card style={{ textAlign: 'center', padding: '32px 24px' }}>
         <div style={{ fontSize: 48, marginBottom: 12 }}>🎉</div>
         <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 20, marginBottom: 8 }}>
           You're on the list, {name.split(' ')[0]}!
         </div>
         <div style={{ color: t.sub, fontSize: 14, lineHeight: 1.6 }}>
-          We'll let you know when the Carbonly app launches. No spam, ever.
+          We'll reach out when Carbonly launches new features. No spam, ever.
         </div>
         <div style={{
           marginTop: 16, display: 'inline-block',
@@ -65,7 +78,7 @@ export default function WaitlistForm({ result }) {
           📬 Stay in the loop
         </div>
         <div style={{ color: t.sub, fontSize: 13, lineHeight: 1.6 }}>
-          Get early access to the Carbonly app — free.
+          Get early access to the Carbonly app and monthly climate insights — free.
         </div>
       </div>
 
@@ -103,34 +116,43 @@ export default function WaitlistForm({ result }) {
       />
 
       {error && (
-        <div style={{ fontSize: 13, color: '#ef4444', marginTop: 8, marginBottom: 4 }}>
+        <div style={{ fontSize: 13, color: '#ef4444', marginTop: 8 }}>
           ⚠️ {error}
         </div>
       )}
 
       <button
         onClick={handleSubmit}
+        disabled={status === 'loading'}
         style={{
           marginTop: 14,
           width: '100%',
-          background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+          background: status === 'loading'
+            ? 'rgba(99,102,241,0.4)'
+            : 'linear-gradient(135deg, #6366f1, #8b5cf6)',
           border: 'none',
           borderRadius: 14,
           padding: '15px',
           color: '#fff',
           fontSize: 15,
           fontWeight: 700,
-          cursor: 'pointer',
+          cursor: status === 'loading' ? 'not-allowed' : 'pointer',
           fontFamily: "'DM Sans', sans-serif",
           boxShadow: '0 4px 20px rgba(99,102,241,0.3)',
         }}
       >
-        Join the waitlist →
+        {status === 'loading' ? 'Submitting…' : 'Join the waitlist →'}
       </button>
 
       <div style={{ marginTop: 10, fontSize: 11, color: t.sub, textAlign: 'center' }}>
         No spam. Unsubscribe anytime.
       </div>
+
+      {status === 'error' && (
+        <div style={{ fontSize: 13, color: '#ef4444', textAlign: 'center', marginTop: 8 }}>
+          Something went wrong. Please try again.
+        </div>
+      )}
     </Card>
   );
 }
