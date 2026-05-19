@@ -63,34 +63,111 @@ function CarbonlyApp() {
         {/* ══ INTRO ══════════════════════════════════════════════════════════ */}
         {step === 0 && (
           <div style={{ animation: 'fadeUp 0.5s ease' }}>
-            <div style={{ textAlign: 'center', padding: '16px 0 28px' }}>
-              <div style={{ fontSize: 72, marginBottom: 16 }}>🌏</div>
+
+            {/* Floating Earth */}
+            <div style={{ textAlign: 'center', padding: '8px 0 24px' }}>
+              <div className="float-emoji" style={{ fontSize: 72 }}>🌏</div>
+            </div>
+
+            {/* Headline */}
+            <div style={{ textAlign: 'center', marginBottom: 28 }}>
               <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 34, fontWeight: 800, lineHeight: 1.15, marginBottom: 14, letterSpacing: -1 }}>
-                Know your<br /><span style={{ color: '#6366f1' }}>carbon impact</span>
+                What's your real<br />
+                <span className="shimmer-text">carbon footprint?</span>
               </h1>
               <p style={{ color: t.sub, fontSize: 15, lineHeight: 1.65, maxWidth: 300, margin: '0 auto' }}>
-                A 2-minute quiz to understand your footprint — tailored for India 🇮🇳
+                Small daily habits create a bigger impact than most people realise. Find out where you stand in under 2 minutes.
               </p>
             </div>
 
-            <Card>
-              <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                {[['⚡','Energy'],['🚗','Travel'],['🥘','Food'],['🛍️','Lifestyle']].map(([ic,lb]) => (
-                  <div key={lb} style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 26 }}>{ic}</div>
-                    <div style={{ fontSize: 12, marginTop: 5, color: t.sub, fontWeight: 500 }}>{lb}</div>
-                  </div>
-                ))}
-              </div>
-            </Card>
+            {/* Social proof */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginBottom: 24, flexWrap: 'wrap' }}>
+              {['🇮🇳 Built for India', '⚡ 2 min quiz', '🔒 No login needed'].map(label => (
+                <div key={label} style={{
+                  background: t.dark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
+                  border: `1px solid ${t.border}`,
+                  borderRadius: 50, padding: '5px 14px',
+                  fontSize: 12, fontWeight: 600, color: t.sub,
+                }}>
+                  {label}
+                </div>
+              ))}
+            </div>
 
-            <div style={{ background: 'rgba(99,102,241,0.08)', borderRadius: 16, padding: '14px 18px', marginBottom: 20, border: '1px solid rgba(99,102,241,0.15)' }}>
-              <div style={{ fontSize: 13, color: t.sub, lineHeight: 1.5 }}>
-                🇮🇳 The average Indian emits <span style={{ color: '#6366f1', fontWeight: 700 }}>1.6 tons</span> of CO₂ per year. Where do you stand?
+            {/* Score preview card */}
+            <div className="card-hover" style={{
+              background: 'linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.08))',
+              border: '1px solid rgba(99,102,241,0.25)',
+              borderRadius: 20, padding: '20px', marginBottom: 16,
+              animation: 'counterUp 0.8s ease 0.3s both',
+            }}>
+              <div style={{ fontSize: 12, color: t.sub, marginBottom: 10, fontWeight: 600, letterSpacing: 0.5 }}>
+                EXAMPLE RESULT
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 36, fontWeight: 800, color: '#6366f1', letterSpacing: -1 }}>
+                    1.2 <span style={{ fontSize: 16, fontWeight: 600 }}>tons/yr</span>
+                  </div>
+                  <div style={{ fontSize: 13, color: t.sub, marginTop: 4 }}>🌱 Getting Started · 25% below avg</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 11, color: t.sub, marginBottom: 6 }}>Breakdown</div>
+                  {[['⚡','34%'],['🚗','28%'],['🥘','24%'],['🛍️','14%']].map(([ic, pct]) => (
+                    <div key={ic} style={{ fontSize: 12, color: t.sub }}>{ic} {pct}</div>
+                  ))}
+                </div>
               </div>
             </div>
 
-            <BtnPrimary onClick={() => setStep(1)}>Calculate my footprint →</BtnPrimary>
+            {/* Why this matters */}
+            <div style={{
+              background: t.dark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
+              border: `1px solid ${t.border}`,
+              borderRadius: 20, padding: '18px 20px', marginBottom: 16,
+              animation: 'counterUp 0.8s ease 0.5s both',
+            }}>
+              <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>💡 Why this matters</div>
+              <div style={{ fontSize: 13, color: t.sub, lineHeight: 1.7 }}>
+                The average Indian emits <span style={{ color: '#6366f1', fontWeight: 700 }}>1.6 tons</span> of CO₂ yearly — but most people have no idea where their emissions actually come from. Carbonly shows you exactly that.
+              </div>
+            </div>
+
+            {/* What affects footprint */}
+            <div style={{ marginBottom: 20, animation: 'counterUp 0.8s ease 0.6s both' }}>
+              <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 12, color: t.sub }}>WHAT WE MEASURE</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                {[
+                  ['⚡', 'Energy',    'Home electricity usage'],
+                  ['🚗', 'Travel',    'Car, flights & commute'],
+                  ['🥘', 'Food',      'Diet & eating habits'],
+                  ['🛍️', 'Lifestyle', 'Shopping & consumption'],
+                ].map(([ic, title, desc]) => (
+                  <div key={title} className="card-hover" style={{
+                    background: t.card,
+                    border: `1px solid ${t.border}`,
+                    borderRadius: 16, padding: '14px',
+                    boxShadow: t.dark ? '0 4px 20px rgba(0,0,0,0.3)' : '0 4px 16px rgba(0,0,0,0.05)',
+                  }}>
+                    <div style={{ fontSize: 24, marginBottom: 6 }}>{ic}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 3 }}>{title}</div>
+                    <div style={{ fontSize: 11, color: t.sub, lineHeight: 1.4 }}>{desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div className="btn-pulse">
+              <BtnPrimary onClick={() => setStep(1)}>
+                See My Carbon Score →
+              </BtnPrimary>
+            </div>
+
+            <div style={{ textAlign: 'center', marginTop: 12, fontSize: 12, color: t.sub }}>
+              🔒 No login · No data stored · 100% free
+            </div>
+
           </div>
         )}
 
