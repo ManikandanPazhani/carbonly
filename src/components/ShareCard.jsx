@@ -18,7 +18,7 @@ ${result.vsAvg > 0
 🥘 Food: ${result.food} kg/month
 🛍️ Lifestyle: ${result.lifestyle} kg/month
 
-Calculate yours 👉 https://carbonly-chi.vercel.app/`;
+Calculate yours 👉 https://carbonlyapp.com/`;
 
   const handleShare = async () => {
     if (navigator.share) {
